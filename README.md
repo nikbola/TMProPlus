@@ -11,5 +11,7 @@ Iterate through characters from start to finish over a specified amount of time.
 
 ### Character Fade-in
 Make characters fade from transparent to opaque during iteration.
+![](https://github.com/nikbola/TMProPlus/blob/Media/Text%20Fade-in.gif)
+
 ### Position Interpolation
 Make characters interpolate from an offset or absolute position to a destination.
