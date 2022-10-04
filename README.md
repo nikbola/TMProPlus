@@ -15,3 +15,4 @@ Make characters fade from transparent to opaque during iteration.
 
 ### Position Interpolation
 Make characters interpolate from an offset or absolute position to a destination.
+![](https://github.com/nikbola/TMProPlus/blob/Media/Text%20Interpolation.gif)
