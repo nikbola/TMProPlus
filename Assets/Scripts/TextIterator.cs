@@ -162,9 +162,6 @@ public class TextIterator : MonoBehaviour
                 height = Vector3.Distance(characterInfo.topLeft, characterInfo.bottomLeft);
             }
 
-            // Trigger On Character Typed Event
-            if (OnCharacterTyped != null) OnCharacterTyped(_textMeshComponent.text[visibleIndex]);
-
             float elapsed = 0f;
             while (elapsed < _secondsPerCharacter)
             {
@@ -236,6 +233,9 @@ public class TextIterator : MonoBehaviour
             }
             _textMeshComponent.UpdateVertexData(TMP_VertexDataUpdateFlags.All);
             visibleIndex++;
+
+            // Trigger On Character Typed Event
+            if (OnCharacterTyped != null) OnCharacterTyped(_textMeshComponent.text[visibleIndex]);
         }
     }
 }
