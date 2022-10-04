@@ -14,5 +14,12 @@ Make characters fade from transparent to opaque during iteration.
 ![](https://github.com/nikbola/TMProPlus/blob/Media/Text%20Fade-in.gif)
 
 ### Position Interpolation
-Make characters interpolate from an offset or absolute position to a destination.
+Make characters interpolate from an offset or absolute position.
+
+Offset:  
 ![](https://github.com/nikbola/TMProPlus/blob/Media/Text%20Interpolation.gif)
+
+Absolute Position:  
+![](https://github.com/nikbola/TMProPlus/blob/Media/Text%20Interpolation%20(Absolute%20Position).gif)
+
+### NOTICE! Low framerate because GIF
