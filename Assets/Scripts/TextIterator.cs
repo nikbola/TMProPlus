@@ -143,14 +143,23 @@ public class TextIterator : MonoBehaviour
                     for (int j = 0; j < 4; j++) vertexColors[vertexIndex + j] = color;
                 }
             }
-            visibleIndex++;
 
             // Copy values instead of reference
             Vector3[] vertexPositions = new Vector3[4];
+            TMP_MeshInfo meshInfo = _textMeshComponent.textInfo.meshInfo[visibleMeshIndex];
             for (int i = 0; i < vertexPositions.Length; i++)
             {
-                TMP_MeshInfo meshInfo = _textMeshComponent.textInfo.meshInfo[visibleMeshIndex];
                 vertexPositions[i] = meshInfo.vertices[visibleVertexIndex + i];
+            }
+
+            // Get width and height to calculate vertex offset from center
+            float width = 0f;
+            float height = 0f;
+            if (_fromPosition)
+            {
+                TMP_CharacterInfo characterInfo = _textMeshComponent.textInfo.characterInfo[visibleIndex];
+                width = Vector3.Distance(characterInfo.topLeft, characterInfo.topRight);
+                height = Vector3.Distance(characterInfo.topLeft, characterInfo.bottomLeft);
             }
 
             // Trigger On Character Typed Event
@@ -174,17 +183,36 @@ public class TextIterator : MonoBehaviour
                 // Interpolate current char's position from source to destination
                 if (_useOffset || _fromPosition)
                 {
-                    TMP_MeshInfo meshInfo = _textMeshComponent.textInfo.meshInfo[visibleMeshIndex];
+                    meshInfo = _textMeshComponent.textInfo.meshInfo[visibleMeshIndex];
+                    Vector3[] startPositions = new Vector3[4];
+
+                    // Offset each vertex from the center
+                    if (_fromPosition)
+                    {
+                        Vector3 offsetY = new Vector3(0, height / 2, 0);
+                        Vector3 offsetX = new Vector3(width / 2, 0, 0);
+                        startPositions[0] = _sourcePosition.position - offsetY - offsetX; //
+                        startPositions[1] = _sourcePosition.position + offsetY - offsetX; // ORDER IS
+                        startPositions[2] = _sourcePosition.position + offsetY + offsetX; // IMPORTANT!
+                        startPositions[3] = _sourcePosition.position - offsetY + offsetX; //
+
+                        // Convert to local space
+                        for (int i = 0; i < startPositions.Length; i++)
+                        {
+                            startPositions[i] = transform.InverseTransformPoint(startPositions[i]);
+                        }
+                    }
+                    
                     for (int i = 0; i < 4; i++)
                     {
                         Vector3 startPos;
 
                         // From offset based on typed character's destination
                         if (_useOffset) startPos = vertexPositions[i] + offset;
-                        
-                        // From static position
-                        else startPos = _sourcePosition.position;
 
+                        // From absolute position
+                        else startPos = startPositions[i];
+                        
                         // Lerp each vertex position from source to destination
                         Vector3 currentPos = Vector3.Lerp(
                             startPos,
@@ -202,11 +230,12 @@ public class TextIterator : MonoBehaviour
             // Make sure that the character gets placed at exactly at destination after lerping is done
             if (_useOffset || _fromPosition)
             {
-                TMP_MeshInfo meshInfo = _textMeshComponent.textInfo.meshInfo[visibleMeshIndex];
+                meshInfo = _textMeshComponent.textInfo.meshInfo[visibleMeshIndex];
 
                 for (int i = 0; i < 4; i++) meshInfo.vertices[visibleVertexIndex + i] = vertexPositions[i];
             }
             _textMeshComponent.UpdateVertexData(TMP_VertexDataUpdateFlags.All);
+            visibleIndex++;
         }
     }
 }
